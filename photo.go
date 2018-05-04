@@ -21,8 +21,33 @@ type PhotoAttachment struct {
 	Width     int    `json:"width"`
 	Height    int    `json:"height"`
 	Text      string `json:"text"`
+  Date      int64  `json:"date"`
 	Created   int64  `json:"created"`
 	AccessKey string `json:"access_key"`
+}
+
+type Photos struct {
+  Count int `json:"count"`
+  Items []PhotoAttachment `json:"items"`
+}
+
+func (client *VKClient) GetPhotos(ownerID int, albumID string, count int) (*Photos, error) {
+  params := url.Values{}
+  params.Set("owner_id", strconv.Itoa(ownerID))
+  params.Set("album_id", albumID)
+  params.Set("rev", "1")
+  params.Set("extended", "0")
+  params.Set("count", strconv.Itoa(count))
+
+  resp, err := client.makeRequest("photos.get", params)
+  if err != nil {
+    return nil, err
+  }
+
+  data := new(Photos)
+  json.Unmarshal(resp.Response, data)
+
+  return data, nil
 }
 
 type photoWallUploadServer struct {

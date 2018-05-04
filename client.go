@@ -211,6 +211,8 @@ func (client *VKClient) makeRequest(method string, params url.Values) (APIRespon
 	if err != nil {
 		return APIResponse{}, err
 	}
+  
+  Print(string(body), true)
 
 	var apiresp APIResponse
 	json.Unmarshal(body, &apiresp)
